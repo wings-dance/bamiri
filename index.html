@@ -46,13 +46,21 @@ button.ib{background:transparent;padding:2px 6px;min-height:44px;display:flex;fl
 .fab{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);width:64px;height:64px;border-radius:50%;background:var(--acc);color:#1c1c1e;font-size:34px;line-height:1;box-shadow:0 6px 20px #0008;z-index:10}
 .empty{color:var(--mut);text-align:center;padding:40px 0;font-size:14px}
 .hicons{display:flex;gap:2px}
+.fbar{display:flex;align-items:center;gap:6px}.fbar #scenes{flex:1;min-width:0;padding:4px 2px}
+button.nav{width:38px;height:38px;padding:0;flex:none;font-size:13px}
+#undo,#redo{width:40px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.srow button{padding:7px 11px;font-size:13px}.hint{font-size:11px;color:var(--mut);align-self:center;margin-left:auto}
+#scenes{touch-action:pan-x}.scene{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:transform .18s}
+#scenes.edit{touch-action:none}#scenes.edit .scene{animation:jig .28s ease-in-out infinite alternate}#scenes.edit .scene:nth-child(2n){animation-delay:-.14s}
+#scenes .scene.drag{transition:none;animation:none;z-index:2;box-shadow:0 6px 16px #000a;filter:brightness(1.25)}
+@keyframes jig{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
 p.note{font-size:12px;color:var(--mut)}</style></head><body>
 <div id="home"></div><div id="editor" hidden><header><button id="back" class="ib" aria-label="作品一覧へ" title="作品一覧へ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><input id="song" placeholder="曲名"><button id="exp" class="ib" aria-label="データを保存" title="データを保存"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg><small>保存</small></button><button id="imp" class="ib" aria-label="データを開く" title="データを開く"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 15V3M7 8l5-5 5 5"/></svg><small>開く</small></button><button id="playBtn" class="main">▶ 再生</button></header>
 <div id="wrap">
 <div id="left">
- <div class="card"><div id="scenes"></div>
-  <div class="row"><button id="addS">＋追加</button><button id="dupS">複製</button><button id="renS">名前変更</button><button id="leftS">◀</button><button id="rightS">▶</button><button id="delS">削除</button></div></div>
- <div class="card" style="margin-top:10px"><div class="zoom"><div><button id="undo" title="元に戻す">↶</button><button id="redo" title="やり直す">↷</button></div><div><button id="zo">－</button><span id="zl">100%</span><button id="zi">＋</button><button id="zr">全体</button></div></div><div id="box" style="margin-top:8px"><svg id="stage"></svg></div><div id="coord">メンバーをタップして選択</div>
+ <div class="card"><div class="fbar"><button id="prevS" class="nav" aria-label="前のフォーメーション">◀</button><div id="scenes"></div><button id="nextS" class="nav" aria-label="次のフォーメーション">▶</button></div>
+  <div class="row srow"><button id="addS">＋追加</button><button id="dupS">複製</button><button id="renS">名前変更</button><button id="delS">削除</button><button id="doneS" class="main" hidden>完了</button><span class="hint" id="hintS">長押しで並べ替え</span></div></div>
+ <div class="card" style="margin-top:10px"><div class="zoom"><div><button id="undo" title="元に戻す" aria-label="元に戻す"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button id="redo" title="やり直す" aria-label="やり直す"><svg style="transform:scaleX(-1)" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button></div><div><button id="zo">－</button><span id="zl">100%</span><button id="zi">＋</button><button id="zr">全体</button></div></div><div id="box" style="margin-top:8px"><svg id="stage"></svg></div><div id="coord">メンバーをタップして選択</div>
   <div class="row" style="justify-content:center"><button id="flip">向き切替</button><button id="png">画像保存</button></div></div>
 </div>
 <div id="side">
@@ -115,7 +123,7 @@ function render(){
   g+=`<g class="dn" data-id="${d.id}" style="cursor:grab"><circle cx="${x}" cy="${y}" r="${24*k}" fill="transparent"/>${on?`<circle cx="${x}" cy="${y}" r="${17*k}" fill="none" stroke="#ececee" stroke-width="2.5"/>`:''}<circle cx="${x}" cy="${y}" r="${13*k}" fill="${d.color}"/><text x="${x}" y="${y+3.5*k}" text-anchor="middle" font-size="${9.5*k}" font-weight="700" fill="#fff" pointer-events="none">${esc(d.name.slice(0,2))}</text><text x="${x}" y="${y+27*k}" text-anchor="middle" font-size="${10*k}" fill="#c8c8cc" pointer-events="none">${esc(d.name.slice(0,4))}</text></g>`});
  svg.innerHTML=g;
  $('coord').textContent=sel&&sc().pos[sel]?`${S.dancers.find(d=>d.id===sel).name}：${posText(sc().pos[sel])}`:'メンバーをタップして選択';
- if($('undo')){$('undo').disabled=!US.length;$('redo').disabled=!RS.length}
+ if($('prevS')){$('prevS').disabled=S.cur<=0;$('nextS').disabled=S.cur>=S.scenes.length-1}if($('undo')){$('undo').disabled=!US.length;$('redo').disabled=!RS.length}
 }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderScenes(){$('scenes').innerHTML=S.scenes.map((s,i)=>`<div class="scene ${i===S.cur?'on':''}" data-i="${i}">${i+1}. ${esc(s.name)}</div>`).join('')}
@@ -152,14 +160,37 @@ $('dancers').addEventListener('click',e=>{const row=e.target.closest('.dl');if(!
 $('addD').onclick=()=>{const id='d'+Date.now(),n=S.dancers.length;S.dancers.push({id,name:'メンバー'+(n+1),color:COLORS[n%COLORS.length]});
  S.scenes.forEach(s=>s.pos[id]={x:0,y:0});sel=id;all()};
 // scenes
-$('scenes').onclick=e=>{const t=e.target.closest('.scene');if(t&&!playing){S.cur=+t.dataset.i;all()}};
+$('scenes').onclick=e=>{if(SUPPRESS){SUPPRESS=false;return}const t=e.target.closest('.scene');if(t&&!playing&&!EDIT){S.cur=+t.dataset.i;all()}};
 const clone=o=>JSON.parse(JSON.stringify(o));
 $('addS').onclick=()=>{const s={name:'フォーメーション'+(S.scenes.length+1),pos:clone(sc().pos)};S.scenes.splice(S.cur+1,0,s);S.cur++;all()};
 $('dupS').onclick=()=>{const s=clone(sc());s.name+='（コピー）';S.scenes.splice(S.cur+1,0,s);S.cur++;all()};
 $('renS').onclick=()=>{const n=prompt('名前（例：サビ1）',sc().name);if(n){sc().name=n;all()}};
 $('delS').onclick=()=>{if(S.scenes.length<2)return alert('最後の1つは消せません');if(!confirm(`「${sc().name}」を削除しますか？`))return;S.scenes.splice(S.cur,1);S.cur=Math.max(0,S.cur-1);all()};
 const mv=k=>{const j=S.cur+k;if(j<0||j>=S.scenes.length)return;[S.scenes[S.cur],S.scenes[j]]=[S.scenes[j],S.scenes[S.cur]];S.cur=j;all()};
-$('leftS').onclick=()=>mv(-1);$('rightS').onclick=()=>mv(1);
+
+// formation nav + long-press reorder
+let EDIT=false,LP=null,DR=null,SUPPRESS=false;
+function setEdit(on){EDIT=on;$('scenes').classList.toggle('edit',on);$('doneS').hidden=!on;$('hintS').hidden=on;['addS','dupS','renS','delS'].forEach(i=>$(i).hidden=on)}
+const nav=k=>{const j=S.cur+k;if(j<0||j>=S.scenes.length||playing)return;S.cur=j;sel=sel;all();const t=$('scenes').children[j];t&&t.scrollIntoView({inline:'nearest',block:'nearest'})};
+$('prevS').onclick=()=>nav(-1);$('nextS').onclick=()=>nav(1);$('doneS').onclick=()=>setEdit(false);
+const SC=$('scenes');
+SC.addEventListener('contextmenu',e=>e.preventDefault());
+SC.addEventListener('touchmove',e=>{if(DR||EDIT)e.preventDefault()},{passive:false});
+function startDrag(t,e){const tabs=[...SC.children],from=tabs.indexOf(t);DR={from,to:from,x0:e.clientX,id:e.pointerId,tabs,rects:tabs.map(x=>x.getBoundingClientRect()),el:t};t.classList.add('drag');try{SC.setPointerCapture(e.pointerId)}catch(_){}}
+SC.addEventListener('pointerdown',e=>{const t=e.target.closest('.scene');if(!t||playing)return;
+ if(EDIT){e.preventDefault();startDrag(t,e);return}
+ LP={x:e.clientX,y:e.clientY,t,timer:setTimeout(()=>{setEdit(true);SUPPRESS=true;startDrag(t,{clientX:LP.x,pointerId:e.pointerId});if(navigator.vibrate)navigator.vibrate(15)},450)}});
+SC.addEventListener('pointermove',e=>{if(LP&&!DR){if(Math.hypot(e.clientX-LP.x,e.clientY-LP.y)>8){clearTimeout(LP.timer);LP=null}else LP.x=e.clientX;return}
+ if(!DR)return;const dx=e.clientX-DR.x0,r=DR.rects,f=DR.from,c=r[f].left+r[f].width/2+dx,gap=6;
+ let to=0;r.forEach((q,j)=>{if(j!==f&&q.left+q.width/2<c)to++});DR.to=to;
+ DR.tabs.forEach((el,j)=>{if(j===f){el.style.transform=`translateX(${dx}px) scale(1.06)`;return}
+  let sh=0;if(f<to&&j>f&&j<=to)sh=-(r[f].width+gap);if(to<f&&j>=to&&j<f)sh=r[f].width+gap;el.style.transform=sh?`translateX(${sh}px)`:''})});
+function endDrag(){if(LP){clearTimeout(LP.timer);LP=null}if(!DR)return;const{from,to}=DR;DR=null;setTimeout(()=>SUPPRESS=false,400);
+ if(from!==to){const curScene=S.scenes[S.cur];const [m]=S.scenes.splice(from,1);S.scenes.splice(to,0,m);S.cur=S.scenes.indexOf(curScene)}
+ all()}
+SC.addEventListener('pointerup',endDrag);SC.addEventListener('pointercancel',endDrag);
+document.addEventListener('pointerdown',e=>{if(EDIT&&!e.target.closest('#scenes,#doneS'))setEdit(false)},true);
+
 // settings
 $('song').oninput=e=>{S.song=e.target.value;render();save()};
 const num=(id,k,mn)=>$(id).onchange=e=>{const v=parseFloat(e.target.value);if(v>=mn){S[k]=k==='dur'?v:Math.round(v*2)/2;all()}};
@@ -220,7 +251,7 @@ function menu(id){const w=DB.works.find(x=>x.id===id);const p=document.createEle
   if(a==='restore'){delete w.deleted;w.updated=Date.now()}
   if(a==='purge'&&confirm('完全に削除します。元に戻せません。'))DB.works=DB.works.filter(x=>x!==w);
   saveDB();if(a!=='open')renderHome()};document.body.appendChild(p)}
-function openWork(id){const w=DB.works.find(x=>x.id===id);if(!w)return;if(CUR)HIST[CUR.id]={US,RS};
+function openWork(id){const w=DB.works.find(x=>x.id===id);if(!w)return;setEdit(false);if(CUR)HIST[CUR.id]={US,RS};
  CUR=w;S=w.data;if(!S.scenes.length)S.scenes.push({name:'フォーメーション1',pos:{}});S.cur=Math.min(S.cur||0,S.scenes.length-1);
  const h=HIST[id]||{US:[],RS:[]};US=h.US;RS=h.RS;LAST=null;sel=null;Z=1;
  $('home').hidden=true;$('editor').hidden=false;setZoom(1);all();scrollTo(0,0)}
