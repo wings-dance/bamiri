@@ -156,7 +156,7 @@ svg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e
 const end=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;if(pan&&!pan.moved&&!pts.size){sel=null;render();renderDancers()}if(!pts.size)pan=null;if(drag){drag=null;save()}};
 svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
 box.addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();setZoom(Z*(e.deltaY<0?1.1:0.9),e.clientX,e.clientY)}},{passive:false});
-$('zi').onclick=()=>setZoom(Z*1.4);$('zo').onclick=()=>setZoom(Z/1.4);$('zr').onclick=()=>setZoom(1);
+const ZS=[1,1.25,1.5,2,2.5,3,4];$('zi').onclick=()=>setZoom(ZS.find(v=>v>Z+.001)??4);$('zo').onclick=()=>setZoom([...ZS].reverse().find(v=>v<Z-.001)??1);$('zr').onclick=()=>setZoom(1);
 
 // dancers
 $('dancers').addEventListener('input',e=>{const id=e.target.closest('.dl').dataset.id,d=S.dancers.find(x=>x.id===id);
@@ -209,7 +209,7 @@ function tween(i,j,stop){const a=S.scenes[i].pos,b=S.scenes[j].pos,t0=performanc
  return new Promise(res=>{const f=now=>{let t=Math.min(1,(now-t0)/D);if(stop&&stop())t=1;const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
   const tmp={name:S.scenes[j].name,pos:{}};for(const id in b){const p=a[id]||b[id];tmp.pos[id]={x:p.x+(b[id].x-p.x)*e,y:p.y+(b[id].y-p.y)*e}}
   S.scenes[i]=tmp;render();S.scenes[i]=orig;t<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)})}
-$('playBtn').onclick=async()=>{if(playing){playing=false;return}playing=true;$('playBtn').textContent='■ 停止';sel=null;
+$('playBtn').onclick=async()=>{if(playing){playing=false;return}playing=true;$('playBtn').textContent='■ 停止';
  const start=S.cur>=S.scenes.length-1?0:S.cur;S.cur=start;render();await wait(600);
  for(let i=start;i<S.scenes.length-1&&playing;i++){await tween(i,i+1,()=>!playing);
   S.cur=i+1;all();await wait(700)}
