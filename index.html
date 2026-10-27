@@ -29,6 +29,7 @@ h3{font-size:12px;margin:4px 0 8px;letter-spacing:.12em;color:var(--mut);font-we
 button.ib{background:transparent;padding:2px 6px;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink)}button.ib small{font-size:9px;color:var(--mut)}
 @media(max-width:480px){header h1{display:none}}
 #editor[hidden],#home[hidden]{display:none!important}
+.ctr{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}.cb{display:flex;align-items:center;gap:4px}.cb button{width:44px;height:44px;padding:0;font-size:20px;border-radius:12px;background:#3a3a3e;color:var(--ink)}.cb button:disabled{opacity:.35}.cb output{min-width:40px;text-align:center;font-size:17px;font-weight:600;color:var(--ink)}
 #home{max-width:900px;margin:auto;padding:16px 14px 110px}
 #home h2{font-size:28px;margin:6px 0 14px;font-weight:700;letter-spacing:.04em}
 .hbar{display:flex;gap:8px;align-items:center}.hbar input{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:11px 16px;font-size:16px}
@@ -73,7 +74,7 @@ p.note{font-size:12px;color:var(--mut)}</style></head><body>
 <div id="side">
  <div class="card"><h3>メンバー</h3><div id="dancers"></div><div class="row"><button id="addD" class="main">＋メンバー追加</button></div></div>
  <div class="card" style="margin-top:10px"><h3>ステージ設定</h3>
-  <div class="row"><label class="s">横幅 <input id="sw" type="number" min="2" max="30" step="0.5"></label><label class="s">奥行 <input id="sd" type="number" min="2" max="30" step="0.5"></label><label class="s">マス目 <select id="div"><option value="1">分割なし</option><option value="2">2分割</option><option value="4">4分割</option><option value="8">8分割</option></select></label><label class="s">移動秒 <input id="dur" type="number" min="0.2" max="5" step="0.1"></label></div>
+  <div class="row"><div class="s ctr">横幅 <div class="cb"><button type="button" data-c="sw" data-k="-1">－</button><output id="sw"></output><button type="button" data-c="sw" data-k="1">＋</button></div></div><div class="s ctr">奥行 <div class="cb"><button type="button" data-c="sd" data-k="-1">－</button><output id="sd"></output><button type="button" data-c="sd" data-k="1">＋</button></div></div><label class="s">マス目 <select id="div"><option value="1">分割なし</option><option value="2">2分割</option><option value="4">4分割</option><option value="8">8分割</option></select></label><div class="s ctr">移動秒 <div class="cb"><button type="button" data-c="dur" data-k="-1">－</button><output id="dur"></output><button type="button" data-c="dur" data-k="1">＋</button></div></div></div>
   <div class="row"><input id="file" type="file" accept=".json,application/json" hidden></div>
   <p class="note">自動でこの端末に保存されます。0.25刻みでスナップ。2本指でズーム、空いている所をドラッグで移動。座標は中央=0、左右は踊る人目線。</p></div>
 </div></div></div>
@@ -135,7 +136,7 @@ function render(){
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderScenes(){$('scenes').innerHTML=S.scenes.map((s,i)=>`<div class="scene ${i===S.cur?'on':''}" data-i="${i}">${i+1}. ${esc(s.name)}</div>`).join('')}
 function renderDancers(){$('dancers').innerHTML=S.dancers.map(d=>`<div class="dl ${sel===d.id?'sel':''}" data-id="${d.id}"><input type="color" value="${d.color}"><input type="text" value="${esc(d.name)}"><button class="del">✕</button></div>`).join('')}
-function all(){render();renderScenes();renderDancers();$('song').value=S.song||'';$('sw').value=S.w;$('sd').value=S.d;$('dur').value=S.dur;$('div').value=DIVN();save()}
+function all(){render();renderScenes();renderDancers();$('song').value=S.song||'';fix(S);for(const k in LIM){const L=LIM[k],o=$(L.id);o.textContent=k==='dur'?S[k].toFixed(1)+'秒':S[k];o.parentNode.children[0].disabled=S[k]<=L.mn;o.parentNode.children[2].disabled=S[k]>=L.mx}$('div').value=DIVN();save()}
 // drag / pan / pinch
 let drag=null;const svg=$('stage'),box=$('box'),pts=new Map();let pinch=null,pan=null;
 function svgPt(e){const r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;return[(e.clientX-r.left)*vb.width/r.width,(e.clientY-r.top)*vb.height/r.height]}
@@ -201,7 +202,12 @@ document.addEventListener('pointerdown',e=>{if(EDIT&&!e.target.closest('#scenes,
 
 // settings
 $('song').oninput=e=>{S.song=e.target.value;render();save()};
-const num=(id,k,mn)=>$(id).onchange=e=>{const v=parseFloat(e.target.value);if(v>=mn){S[k]=k==='dur'?v:Math.round(v*2)/2;all()}};
+const LIM={w:{id:'sw',mn:2,mx:12,st:1,df:8},d:{id:'sd',mn:2,mx:12,st:1,df:6},dur:{id:'dur',mn:0.5,mx:5,st:0.5,df:1}};
+function fix(o){for(const k in LIM){const L=LIM[k];let v=+o[k];if(!isFinite(v))v=L.df;v=Math.round(v/L.st)*L.st;o[k]=Math.max(L.mn,Math.min(L.mx,v))}
+ if(![1,2,4,8].includes(+o.div))o.div=4;else o.div=+o.div;const X=o.w/2+1,Y=o.d/2;
+ (o.scenes||[]).forEach(sc=>{for(const id in sc.pos||{}){const p=sc.pos[id];if(!p||!isFinite(+p.x)||!isFinite(+p.y)){delete sc.pos[id];continue}p.x=Math.max(-X,Math.min(X,+p.x));p.y=Math.max(-Y,Math.min(Y,+p.y))}});return o}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const k=Object.keys(LIM).find(k=>LIM[k].id===b.dataset.c),L=LIM[k];S[k]=Math.round((S[k]+(+b.dataset.k)*L.st)*10)/10;all()});
+const num=()=>{};
 $('div').onchange=e=>{S.div=+e.target.value;all()};num('sw','w',2);num('sd','d',2);num('dur','dur',0.2);
 $('flip').onclick=()=>{S.view=S.view==='audience'?'dancer':'audience';all()};
 // play
@@ -220,7 +226,7 @@ $('exp').onclick=()=>dl(new Blob([JSON.stringify(S,null,1)],{type:'application/j
 $('imp').onclick=()=>$('file').click();
 $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{let n=0,last=null;try{const o=JSON.parse(t);
  const list=o&&Array.isArray(o.works)?o.works.map(w=>w.data||w):[o];
- for(const d of list){if(!d||!d.scenes||!d.dancers)continue;d.cur=0;last={id:'w'+Date.now()+'_'+(n++),updated:Date.now(),data:d};DB.works.push(last)}
+ for(const d of list){if(!d||!Array.isArray(d.scenes)||!Array.isArray(d.dancers))continue;d.cur=0;fix(d);last={id:'w'+Date.now()+'_'+(n++),updated:Date.now(),data:d};DB.works.push(last)}
  if(!n)throw 0;saveDB();if(n===1&&!$('editor').hidden)openWork(last.id);else{showHome();}}catch(_){alert('読み込めないファイルです')}});e.target.value=''};
 
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
@@ -261,7 +267,7 @@ function menu(id){const w=DB.works.find(x=>x.id===id);const p=document.createEle
   if(a==='purge'&&confirm('完全に削除します。元に戻せません。'))DB.works=DB.works.filter(x=>x!==w);
   saveDB();if(a!=='open')renderHome()};document.body.appendChild(p)}
 function openWork(id){const w=DB.works.find(x=>x.id===id);if(!w)return;setEdit(false);if(CUR)HIST[CUR.id]={US,RS};
- CUR=w;S=w.data;if(!S.scenes.length)S.scenes.push({name:'フォーメーション1',pos:{}});S.cur=Math.min(S.cur||0,S.scenes.length-1);
+ CUR=w;S=fix(w.data);if(!S.scenes.length)S.scenes.push({name:'フォーメーション1',pos:{}});S.cur=Math.min(S.cur||0,S.scenes.length-1);
  const h=HIST[id]||{US:[],RS:[]};US=h.US;RS=h.RS;LAST=null;sel=null;Z=1;
  $('home').hidden=true;$('editor').hidden=false;setZoom(1);all();scrollTo(0,0)}
 $('back').onclick=()=>{if(CUR)HIST[CUR.id]={US,RS};showHome()};
