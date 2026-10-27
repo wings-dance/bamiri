@@ -26,8 +26,10 @@ svg#stage{width:100%;margin:auto;touch-action:none;user-select:none;-webkit-user
 .dl.sel{background:#38383c;border-radius:8px}
 label.s{font-size:14px;color:var(--mut)}label.s input{width:60px;font-size:15px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px}
 h3{font-size:12px;margin:4px 0 8px;letter-spacing:.12em;color:var(--mut);font-weight:600}
+button.ib{background:transparent;padding:2px 6px;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink)}button.ib small{font-size:9px;color:var(--mut)}
+@media(max-width:480px){header h1{display:none}}
 p.note{font-size:12px;color:var(--mut)}</style></head><body>
-<header><h1>バミリ帳</h1><input id="song" placeholder="曲名"><button id="playBtn" class="main">▶ 再生</button></header>
+<header><h1>バミリ帳</h1><input id="song" placeholder="曲名"><button id="exp" class="ib" aria-label="データを保存" title="データを保存"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg><small>保存</small></button><button id="imp" class="ib" aria-label="データを開く" title="データを開く"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 15V3M7 8l5-5 5 5"/></svg><small>開く</small></button><button id="playBtn" class="main">▶ 再生</button></header>
 <div id="wrap">
 <div id="left">
  <div class="card"><div id="scenes"></div>
@@ -39,7 +41,7 @@ p.note{font-size:12px;color:var(--mut)}</style></head><body>
  <div class="card"><h3>メンバー</h3><div id="dancers"></div><div class="row"><button id="addD" class="main">＋メンバー追加</button></div></div>
  <div class="card" style="margin-top:10px"><h3>ステージ設定</h3>
   <div class="row"><label class="s">横幅 <input id="sw" type="number" min="2" max="30" step="0.5"></label><label class="s">奥行 <input id="sd" type="number" min="2" max="30" step="0.5"></label><label class="s">移動秒 <input id="dur" type="number" min="0.2" max="5" step="0.1"></label></div>
-  <div class="row"><button id="exp">JSON書き出し</button><button id="imp">JSON読み込み</button><button id="reset">リセット</button><input id="file" type="file" accept=".json,application/json" hidden></div>
+  <div class="row"><button id="reset">リセット</button><input id="file" type="file" accept=".json,application/json" hidden></div>
   <p class="note">自動でこの端末に保存されます。0.25刻みでスナップ。2本指でズーム、空いている所をドラッグで移動。座標は中央=0、左右は踊る人目線。</p></div>
 </div></div>
 <script>
