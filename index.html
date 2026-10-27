@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#1c1c1e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="バミリ帳"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>バミリ帳</title>
+<style>:root{--bg:#1c1c1e;--card:#2a2a2d;--ink:#ececee;--line:#3a3a3e;--mut:#9a9aa0;--field:#333336;--acc:#b9b9c0}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+header{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.1em;color:var(--mut)}
+header input{flex:1;min-width:0;background:transparent;color:var(--ink);border:none;text-align:center;font-size:18px;font-weight:500;padding:6px}
+button{border:none;background:var(--field);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer;white-space:nowrap;min-height:36px}
+button.main{background:var(--acc);color:#1c1c1e;font-weight:600}button:active{filter:brightness(1.25)}button:disabled{opacity:.35}
+#wrap{display:flex;flex-direction:column;gap:10px;padding:10px;max-width:1400px;margin:auto}
+@media(min-width:700px){#side{display:grid;grid-template-columns:1fr 1fr;gap:10px}#side .card{margin-top:0!important}}
+@media(min-width:1000px){#wrap{flex-direction:row;align-items:flex-start}#left{flex:1;min-width:0}#side{width:330px;display:block}#side .card+.card{margin-top:10px!important}}
+.card{background:var(--card);border-radius:14px;padding:10px}
+#scenes{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.scene{flex:none;padding:7px 14px;border-radius:999px;background:var(--field);font-size:14px;cursor:pointer}
+.scene.on{background:var(--acc);color:#1c1c1e;font-weight:600}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+#box{overflow:auto;-webkit-overflow-scrolling:touch;touch-action:none}
+svg#stage{width:100%;margin:auto;touch-action:none;user-select:none;-webkit-user-select:none;display:block}
+#coord{font-size:13px;text-align:center;margin-top:4px;min-height:20px;color:var(--mut)}
+.zoom{display:flex;gap:6px;align-items:center;justify-content:space-between;flex-wrap:wrap}.zoom span{font-size:12px;color:var(--mut);min-width:40px;text-align:center}.zoom div{display:flex;gap:6px;align-items:center}
+.dl{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--line)}
+.dl input[type=text]{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:15px;background:var(--field);color:var(--ink)}
+.dl input[type=color]{width:30px;height:30px;border:none;background:none;padding:0;border-radius:50%}
+.dl.sel{background:#38383c;border-radius:8px}
+label.s{font-size:14px;color:var(--mut)}label.s input{width:60px;font-size:15px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px}
+h3{font-size:12px;margin:4px 0 8px;letter-spacing:.12em;color:var(--mut);font-weight:600}
+p.note{font-size:12px;color:var(--mut)}</style></head><body>
+<header><h1>バミリ帳</h1><input id="song" placeholder="曲名"><button id="playBtn" class="main">▶ 再生</button></header>
+<div id="wrap">
+<div id="left">
+ <div class="card"><div id="scenes"></div>
+  <div class="row"><button id="addS">＋追加</button><button id="dupS">複製</button><button id="renS">名前変更</button><button id="leftS">◀</button><button id="rightS">▶</button><button id="delS">削除</button></div></div>
+ <div class="card" style="margin-top:10px"><div class="zoom"><div><button id="undo" title="元に戻す">↶</button><button id="redo" title="やり直す">↷</button></div><div><button id="zo">－</button><span id="zl">100%</span><button id="zi">＋</button><button id="zr">全体</button></div></div><div id="box" style="margin-top:8px"><svg id="stage"></svg></div><div id="coord">メンバーをタップして選択</div>
+  <div class="row" style="justify-content:center"><button id="flip">向き切替</button><button id="png">画像保存</button></div></div>
+</div>
+<div id="side">
+ <div class="card"><h3>メンバー</h3><div id="dancers"></div><div class="row"><button id="addD" class="main">＋メンバー追加</button></div></div>
+ <div class="card" style="margin-top:10px"><h3>ステージ設定</h3>
+  <div class="row"><label class="s">横幅 <input id="sw" type="number" min="2" max="30" step="0.5"></label><label class="s">奥行 <input id="sd" type="number" min="2" max="30" step="0.5"></label><label class="s">移動秒 <input id="dur" type="number" min="0.2" max="5" step="0.1"></label></div>
+  <div class="row"><button id="exp">JSON書き出し</button><button id="imp">JSON読み込み</button><button id="reset">リセット</button><input id="file" type="file" accept=".json,application/json" hidden></div>
+  <p class="note">自動でこの端末に保存されます。0.25刻みでスナップ。2本指でズーム、空いている所をドラッグで移動。座標は中央=0、左右は踊る人目線。</p></div>
+</div></div>
+<script>
+const COLORS=['#ff6fa5','#7ec8ff','#ffc94d','#8de0a8','#c49bff','#ff9a6b','#6be0d8','#ff8fd0'];
+const KEY='bamiri-v1';const $=id=>document.getElementById(id);
+function sample(){const ns=['ゆりか','みお','さき','ねね','りん'];
+ const d=ns.map((n,i)=>({id:'d'+i,name:n,color:COLORS[i]}));
+ const P=(a)=>Object.fromEntries(a.map((p,i)=>['d'+i,{x:p[0],y:p[1]}]));
+ return{song:'WINGS デモ曲',w:8,d:6,dur:1.2,view:'dancer',dancers:d,cur:0,scenes:[
+ {name:'イントロ',pos:P([[0,0.75],[-1.75,0.25],[1.75,0.25],[-0.75,-1.25],[0.75,-1.25]])},
+ {name:'サビ1',pos:P([[0,1.5],[-1.25,0.75],[1.25,0.75],[-2.5,-0.25],[2.5,-0.25]])},
+ {name:'Aメロ',pos:P([[-2.25,0.5],[-1.25,0],[0,-0.5],[1.25,0],[2.25,0.5]])}]}}
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!S||!S.scenes)S=sample();
+let sel=null,playing=false;
+let US=[],RS=[],LAST=null;
+const snapS=()=>{const o=JSON.parse(JSON.stringify(S));return JSON.stringify(o)};
+const save=()=>{const j=snapS();if(LAST!==null&&j!==LAST){US.push(LAST);if(US.length>100)US.shift();RS=[]}LAST=j;localStorage.setItem(KEY,j);if(window.$&&$('undo')){$('undo').disabled=!US.length;$('redo').disabled=!RS.length}};
+function hist(from,to){if(!from.length)return;to.push(LAST);LAST=from.pop();S=JSON.parse(LAST);if(!S.dancers.some(d=>d.id===sel))sel=null;all()}
+const snap=v=>Math.round(v*4)/4;
+const fmt=v=>{v=Math.abs(v);return(+v.toFixed(2)).toString()};
+const sc=()=>S.scenes[S.cur];
+// geometry: units -> px
+const U=60;let M=80,Z=1,LS=1;
+function toPx(x,y){const fl=S.view==='audience'?-1:1;return[M+(WING+S.w/2+fl*x)*U,M+(S.d/2-fl*y)*U]}
+function fromPx(px,py){const fl=S.view==='audience'?-1:1;return[fl*((px-M)/U-WING-S.w/2),fl*(S.d/2-(py-M)/U)]}
+function posText(p){const lr=p.x===0?'センター':(p.x>0?'右 ':'左 ')+fmt(p.x);const fb=p.y===0?'中央':(p.y>0?'前 ':'後ろ ')+fmt(p.y);return lr+' / '+fb}
+const WING=1;
+function render(){
+ M=46;const W=(S.w+2*WING)*U+2*M,H=S.d*U+2*M,svg=$('stage');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+ const k=Math.min(1.8,Math.max(1,W/((svg.clientWidth||W)*Z)*0.75)),aud=S.view==='audience',L=M,T=M,R=W-M,B=H-M,sx=M+WING*U,ex=R-WING*U;
+ let g=`<defs><clipPath id="cl"><rect x="${L}" y="${T}" width="${R-L}" height="${B-T}" rx="16"/></clipPath></defs><rect width="${W}" height="${H}" fill="#2a2a2d"/>`;
+ g+=`<g clip-path="url(#cl)"><rect x="${L}" y="${T}" width="${R-L}" height="${B-T}" fill="#232326"/><rect x="${L}" y="${T}" width="${sx-L}" height="${B-T}" fill="#38383c"/><rect x="${ex}" y="${T}" width="${R-ex}" height="${B-T}" fill="#38383c"/>`;
+ for(let i=-(S.w/2+WING)*2;i<=(S.w/2+WING)*2;i++){const v=i/2,[x]=toPx(v,0);if(x<=L||x>=R)continue;const int=Number.isInteger(v);
+  g+=`<line x1="${x}" y1="${T}" x2="${x}" y2="${B}" stroke="${int?'#4a4a4f':'#303034'}" stroke-width="${int?1.2:0.8}"/>`}
+ for(let i=-S.d*2;i<=S.d*2;i++){const v=i/4*2,[,y]=toPx(0,v);if(y<=T||y>=B)continue;const int=Number.isInteger(v);
+  g+=`<line x1="${L}" y1="${y}" x2="${R}" y2="${y}" stroke="${int?'#4a4a4f':'#303034'}" stroke-width="${int?1.2:0.8}"/>`}
+ g+=`</g><rect x="${L}" y="${T}" width="${R-L}" height="${B-T}" rx="16" fill="none" stroke="#9a9aa0" stroke-width="2"/>`;
+ const cx=W/2,cy=H/2,t=10;
+ g+=`<g stroke="#9a9aa0" stroke-width="2"><line x1="${cx}" y1="${T-t}" x2="${cx}" y2="${T+t}"/><line x1="${cx}" y1="${B-t}" x2="${cx}" y2="${B+t}"/><line x1="${L-t}" y1="${cy}" x2="${L+t}" y2="${cy}"/><line x1="${R-t}" y1="${cy}" x2="${R+t}" y2="${cy}"/>`;
+ g+=`<line x1="${cx-7}" y1="${cy-7}" x2="${cx+7}" y2="${cy+7}"/><line x1="${cx+7}" y1="${cy-7}" x2="${cx-7}" y2="${cy+7}"/></g>`;
+ g+=`<text x="${cx}" y="${aud?B+32:T-20}" text-anchor="middle" font-size="${15*k}" font-weight="600" fill="#ececee">観客</text><text x="${cx}" y="${aud?T-20:B+32}" text-anchor="middle" font-size="${14*k}" fill="#9a9aa0">舞台裏</text>`;
+ g+=`<text x="${R}" y="${aud?B+32:T-20}" text-anchor="end" font-size="12" fill="#77777d">${aud?'客席から見た図':'踊る人目線'}</text>`;
+ S.dancers.forEach(d=>{const p=sc().pos[d.id];if(!p)return;const[x,y]=toPx(p.x,p.y),on=sel===d.id;
+  g+=`<g class="dn" data-id="${d.id}" style="cursor:grab"><circle cx="${x}" cy="${y}" r="${24*k}" fill="transparent"/>${on?`<circle cx="${x}" cy="${y}" r="${17*k}" fill="none" stroke="#ececee" stroke-width="2.5"/>`:''}<circle cx="${x}" cy="${y}" r="${13*k}" fill="${d.color}"/><text x="${x}" y="${y+3.5*k}" text-anchor="middle" font-size="${9.5*k}" font-weight="700" fill="#fff" pointer-events="none">${esc(d.name.slice(0,2))}</text><text x="${x}" y="${y+27*k}" text-anchor="middle" font-size="${10*k}" fill="#c8c8cc" pointer-events="none">${esc(d.name.slice(0,4))}</text></g>`});
+ svg.innerHTML=g;
+ $('coord').textContent=sel&&sc().pos[sel]?`${S.dancers.find(d=>d.id===sel).name}：${posText(sc().pos[sel])}`:'メンバーをタップして選択';
+ if($('undo')){$('undo').disabled=!US.length;$('redo').disabled=!RS.length}
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderScenes(){$('scenes').innerHTML=S.scenes.map((s,i)=>`<div class="scene ${i===S.cur?'on':''}" data-i="${i}">${i+1}. ${esc(s.name)}</div>`).join('')}
+function renderDancers(){$('dancers').innerHTML=S.dancers.map(d=>`<div class="dl ${sel===d.id?'sel':''}" data-id="${d.id}"><input type="color" value="${d.color}"><input type="text" value="${esc(d.name)}"><button class="del">✕</button></div>`).join('')}
+function all(){render();renderScenes();renderDancers();$('song').value=S.song||'';$('sw').value=S.w;$('sd').value=S.d;$('dur').value=S.dur;save()}
+// drag / pan / pinch
+let drag=null;const svg=$('stage'),box=$('box'),pts=new Map();let pinch=null,pan=null;
+function svgPt(e){const r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;return[(e.clientX-r.left)*vb.width/r.width,(e.clientY-r.top)*vb.height/r.height]}
+function setZoom(z,cx,cy){z=Math.max(1,Math.min(4,z));const r=box.getBoundingClientRect();cx=cx??r.left+r.width/2;cy=cy??r.top+r.height/2;
+ const fx=(box.scrollLeft+cx-r.left)/(svg.clientWidth||1),fy=(box.scrollTop+cy-r.top)/(svg.clientHeight||1);Z=z;svg.style.width=(100*Z)+'%';render();svg.style.maxHeight=Z>1?'none':'calc(100vh - 200px)';
+ box.scrollLeft=fx*svg.clientWidth-(cx-r.left);box.scrollTop=fy*svg.clientHeight-(cy-r.top);$('zl').textContent=Math.round(Z*100)+'%'}
+const dist=()=>{const[a,b]=[...pts.values()];return Math.hypot(a.x-b.x,a.y-b.y)};
+svg.addEventListener('pointerdown',e=>{pts.set(e.pointerId,{x:e.clientX,y:e.clientY});svg.setPointerCapture(e.pointerId);e.preventDefault();
+ if(pts.size===2){drag=null;pan=null;const[a,b]=[...pts.values()];pinch={d:dist(),z:Z};return}
+ if(playing)return;const g=e.target.closest('.dn');
+ if(!g){pan={x:e.clientX,y:e.clientY,sl:box.scrollLeft,st:box.scrollTop,moved:false};return}
+ sel=g.dataset.id;drag=sel;render();renderDancers()});
+svg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pinch&&pts.size===2){const[a,b]=[...pts.values()];setZoom(pinch.z*dist()/pinch.d,(a.x+b.x)/2,(a.y+b.y)/2);return}
+ if(pan){const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(Math.abs(dx)+Math.abs(dy)>4)pan.moved=true;box.scrollLeft=pan.sl-dx;box.scrollTop=pan.st-dy;return}
+ if(!drag)return;let[x,y]=fromPx(...svgPt(e));x=Math.max(-S.w/2-WING,Math.min(S.w/2+WING,snap(x)));y=Math.max(-S.d/2,Math.min(S.d/2,snap(y)));
+ const p=sc().pos[drag];if(p.x!==x||p.y!==y){p.x=x;p.y=y;render()}});
+const end=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;if(pan&&!pan.moved&&!pts.size){sel=null;render();renderDancers()}if(!pts.size)pan=null;if(drag){drag=null;save()}};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+box.addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();setZoom(Z*(e.deltaY<0?1.1:0.9),e.clientX,e.clientY)}},{passive:false});
+$('zi').onclick=()=>setZoom(Z*1.4);$('zo').onclick=()=>setZoom(Z/1.4);$('zr').onclick=()=>setZoom(1);
+
+// dancers
+$('dancers').addEventListener('input',e=>{const id=e.target.closest('.dl').dataset.id,d=S.dancers.find(x=>x.id===id);
+ if(e.target.type==='color')d.color=e.target.value;else d.name=e.target.value;render();save()});
+$('dancers').addEventListener('click',e=>{const row=e.target.closest('.dl');if(!row)return;const id=row.dataset.id;
+ if(e.target.classList.contains('del')){if(!confirm('このメンバーを削除しますか？'))return;S.dancers=S.dancers.filter(d=>d.id!==id);S.scenes.forEach(s=>delete s.pos[id]);if(sel===id)sel=null;all();return}
+ if(e.target.tagName!=='INPUT'){sel=id;render();renderDancers()}});
+$('addD').onclick=()=>{const id='d'+Date.now(),n=S.dancers.length;S.dancers.push({id,name:'メンバー'+(n+1),color:COLORS[n%COLORS.length]});
+ S.scenes.forEach(s=>s.pos[id]={x:0,y:0});sel=id;all()};
+// scenes
+$('scenes').onclick=e=>{const t=e.target.closest('.scene');if(t&&!playing){S.cur=+t.dataset.i;all()}};
+const clone=o=>JSON.parse(JSON.stringify(o));
+$('addS').onclick=()=>{const s={name:'フォーメーション'+(S.scenes.length+1),pos:clone(sc().pos)};S.scenes.splice(S.cur+1,0,s);S.cur++;all()};
+$('dupS').onclick=()=>{const s=clone(sc());s.name+='（コピー）';S.scenes.splice(S.cur+1,0,s);S.cur++;all()};
+$('renS').onclick=()=>{const n=prompt('名前（例：サビ1）',sc().name);if(n){sc().name=n;all()}};
+$('delS').onclick=()=>{if(S.scenes.length<2)return alert('最後の1つは消せません');if(!confirm(`「${sc().name}」を削除しますか？`))return;S.scenes.splice(S.cur,1);S.cur=Math.max(0,S.cur-1);all()};
+const mv=k=>{const j=S.cur+k;if(j<0||j>=S.scenes.length)return;[S.scenes[S.cur],S.scenes[j]]=[S.scenes[j],S.scenes[S.cur]];S.cur=j;all()};
+$('leftS').onclick=()=>mv(-1);$('rightS').onclick=()=>mv(1);
+// settings
+$('song').oninput=e=>{S.song=e.target.value;render();save()};
+const num=(id,k,mn)=>$(id).onchange=e=>{const v=parseFloat(e.target.value);if(v>=mn){S[k]=k==='dur'?v:Math.round(v*2)/2;all()}};
+num('sw','w',2);num('sd','d',2);num('dur','dur',0.2);
+$('flip').onclick=()=>{S.view=S.view==='audience'?'dancer':'audience';all()};
+// play
+$('playBtn').onclick=async()=>{if(playing){playing=false;return}playing=true;$('playBtn').textContent='■ 停止';sel=null;
+ const start=S.cur>=S.scenes.length-1?0:S.cur;S.cur=start;render();await wait(600);
+ for(let i=start;i<S.scenes.length-1&&playing;i++){const a=S.scenes[i].pos,b=S.scenes[i+1].pos,t0=performance.now(),D=S.dur*1000;
+  const orig=S.scenes[i];await new Promise(res=>{const f=now=>{let t=Math.min(1,(now-t0)/D);if(!playing)t=1;const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+   const tmp={name:S.scenes[i+1].name,pos:{}};for(const id in b){const p=a[id]||b[id];tmp.pos[id]={x:p.x+(b[id].x-p.x)*e,y:p.y+(b[id].y-p.y)*e}}
+   S.scenes[i]=tmp;render();S.scenes[i]=orig;t<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)});
+  S.cur=i+1;all();await wait(700)}
+ playing=false;$('playBtn').textContent='▶ 再生';all()};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+// io
+$('exp').onclick=()=>dl(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),(S.song||'bamiri')+'.json');
+$('imp').onclick=()=>$('file').click();
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);if(!o.scenes||!o.dancers)throw 0;S=o;S.cur=0;sel=null;all()}catch(_){alert('読み込めないファイルです')}});e.target.value=''};
+$('reset').onclick=()=>{if(confirm('サンプルに戻しますか？（今のデータは消えます）')){S=sample();sel=null;all()}};
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+$('png').onclick=()=>{const s0=sel;sel=null;render();const vb=svg.viewBox.baseVal,k=3;
+ const x=new XMLSerializer().serializeToString(svg).replace('<svg',`<svg xmlns="http://www.w3.org/2000/svg" width="${vb.width}" height="${vb.height}" font-family="sans-serif"`);
+ sel=s0;render();const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=vb.width*k;c.height=vb.height*k;const ctx=c.getContext('2d');ctx.scale(k,k);ctx.drawImage(img,0,0);
+ c.toBlob(b=>dl(b,`${S.song||'bamiri'}_${sc().name}.png`))};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)};
+$('undo').onclick=()=>hist(US,RS);$('redo').onclick=()=>hist(RS,US);
+addEventListener('resize',()=>render());all();svg.style.maxHeight='calc(100vh - 200px)';
+</script></body></html>
