@@ -226,7 +226,7 @@ function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='
 $('exp').onclick=async()=>{const nm=((S.song||'bamiri').replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,40)||'bamiri')+'.bamiri.json',ty='application/json;charset=utf-8',txt=JSON.stringify(S,null,1);
  let f=null;try{f=new File([txt],nm,{type:'application/json'})}catch(_){}
  if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
-  if(ok){try{await navigator.share({files:[f],title:S.song||'バミリ'});toast('保存したよ')}catch(e){if(e&&e.name!=='AbortError')toast('保存できへんかった…')}return}}
+  if(ok){try{await navigator.share({files:[f],title:S.song||'バミリ'});toast('保存したよ')}catch(e){if(e&&e.name!=='AbortError')toast('保存できなかった…')}return}}
  dl(new Blob([txt],{type:ty}),nm);toast('保存したよ')};
 $('imp').onclick=()=>$('file').click();
 $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{t=t.replace(/^\uFEFF/,'');let n=0,last=null;try{const o=JSON.parse(t);
