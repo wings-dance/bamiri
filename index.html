@@ -27,7 +27,7 @@ svg#stage{width:100%;margin:auto;touch-action:none;user-select:none;-webkit-user
 label.s{font-size:14px;color:var(--mut)}label.s select{font-size:15px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px}label.s input{width:60px;font-size:15px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px}
 h3{font-size:12px;margin:4px 0 8px;letter-spacing:.12em;color:var(--mut);font-weight:600}
 button.ib{background:transparent;padding:2px 6px;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink)}button.ib small{font-size:9px;color:var(--mut)}
-@media(max-width:480px){header h1{display:none}}
+@media(max-width:480px){header h1{display:none}header{gap:4px;padding:8px 6px}header button.ib{padding:2px 3px}}@media(max-width:360px){#playBtn{padding:8px 10px;font-size:14px}}
 #editor[hidden],#home[hidden]{display:none!important}
 @media(max-width:350px){.sgrid .cb button{width:40px}.sgrid .cb output{font-size:15px;min-width:34px}}.sgrid{display:grid!important;grid-template-columns:1fr 1fr;gap:12px 12px;align-items:start}.sgrid>.s{margin:0;min-width:0}.sgrid select{width:100%;max-width:172px}.ctr{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}.cb{display:flex;align-items:center;gap:4px}.cb button{width:44px;height:44px;padding:0;font-size:20px;border-radius:12px;background:#3a3a3e;color:var(--ink)}.cb button:disabled{opacity:.35}.cb output{white-space:nowrap;min-width:40px;text-align:center;font-size:17px;font-weight:600;color:var(--ink)}
 #home{max-width:900px;margin:auto;padding:16px 14px 110px}
@@ -62,14 +62,14 @@ body.anim button.big,body.anim button.nav{opacity:.5}
 #scenes{padding:2px 0 6px}
 [hidden]{display:none!important}
 p.note{font-size:12px;color:var(--mut)}</style></head><body>
-<div id="home"></div><div id="editor" hidden><header><button id="back" class="ib" aria-label="作品一覧へ" title="作品一覧へ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><input id="song" placeholder="曲名"><button id="exp" class="ib" aria-label="共有" title="共有"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/><path d="M12 15V3M8 7l4-4 4 4"/></svg><small>共有</small></button><button id="imp" class="ib" aria-label="データを開く" title="データを開く"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><small>開く</small></button><button id="playBtn" class="main">▶ 再生</button></header>
+<div id="home"></div><div id="editor" hidden><header><button id="back" class="ib" aria-label="作品一覧へ" title="作品一覧へ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><input id="song" placeholder="曲名"><button id="savepng" class="ib" aria-label="画像を保存" title="画像を保存"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg><small>保存</small></button><button id="exp" class="ib" aria-label="共有" title="共有"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/><path d="M12 15V3M8 7l4-4 4 4"/></svg><small>共有</small></button><button id="imp" class="ib" aria-label="データを開く" title="データを開く"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><small>開く</small></button><button id="playBtn" class="main">▶ 再生</button></header>
 <div id="wrap">
 <div id="left">
  <div class="card"><div id="scenes"></div>
   <div class="row srow"><button id="addS">＋追加</button><button id="dupS">複製</button><button id="delS">削除</button><button id="doneS" class="main" hidden>完了</button><button id="renS" hidden>名前変更</button><span class="hint" id="hintS"><span>2回タップで名前変更</span><span>長押しで並べ替え</span></span></div>
   <div class="navrow2"><button id="prev2" class="big" aria-label="前のフォーメーションへ"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button id="next2" class="big" aria-label="次のフォーメーションへ"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
  <div class="card" style="margin-top:10px"><div class="zoom"><div><button id="undo" title="元に戻す" aria-label="元に戻す"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button id="redo" title="やり直す" aria-label="やり直す"><svg style="transform:scaleX(-1)" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button></div><div><button id="zo">－</button><span id="zl">100%</span><button id="zi">＋</button><button id="zr">全体</button></div></div><div id="box" style="margin-top:8px"><svg id="stage"></svg></div><div class="navrow"><div id="coord">メンバーをタップして選択</div></div>
-  <div class="row" style="justify-content:center"><button id="flip">向き切替</button><button id="png">画像保存</button></div></div>
+  <div class="row" style="justify-content:center"><button id="flip">向き切替</button></div></div>
 </div>
 <div id="side">
  <div class="card"><h3>メンバー</h3><div id="dancers"></div><div class="row"><button id="addD" class="main">＋メンバー追加</button></div></div>
@@ -88,7 +88,7 @@ function sample(){const ns=['ゆりか','みお','さき','ねね','りん'];
  {name:'イントロ',pos:P([[0,0.75],[-1.75,0.25],[1.75,0.25],[-0.75,-1.25],[0.75,-1.25]])},
  {name:'サビ1',pos:P([[0,1.5],[-1.25,0.75],[1.25,0.75],[-2.5,-0.25],[2.5,-0.25]])},
  {name:'Aメロ',pos:P([[-2.25,0.5],[-1.25,0],[0,-0.5],[1.25,0],[2.25,0.5]])}]}}
-const ICSH=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/><path d="M12 15V3M8 7l4-4 4 4"/></svg>`,ICFD=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`,ICDN=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg>`,ICUP=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 15V3M7 8l5-5 5 5"/></svg>`;
+const ICDL=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg>`;const ICSH=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/><path d="M12 15V3M8 7l4-4 4 4"/></svg>`,ICFD=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`,ICDN=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg>`,ICUP=`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 15V3M7 8l5-5 5 5"/></svg>`;
 const WKEY='bamiri-works-v1',DAY=864e5,TRASH_DAYS=30;
 let DB=null;try{DB=JSON.parse(localStorage.getItem(WKEY))}catch(e){}
 if(!DB||!Array.isArray(DB.works)){DB={works:[]};let old=null;try{old=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -223,11 +223,29 @@ $('playBtn').onclick=async()=>{if(playing){playing=false;return}playing=true;$('
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 // io
 function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#3a3a3e;color:#ececee;padding:10px 18px;border-radius:999px;font-size:14px;z-index:50;box-shadow:0 4px 14px #0008;transition:opacity .3s;pointer-events:none';document.body.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,1800)}
-$('exp').onclick=async()=>{const nm=((S.song||'bamiri').replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,40)||'bamiri')+'.bamiri',ty='application/octet-stream',txt=JSON.stringify(S,null,1);
- let f=null;try{f=new File([txt],nm,{type:'application/octet-stream'})}catch(_){}
- if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
-  if(ok){try{await navigator.share({files:[f],title:S.song||'バミリ'});toast('共有したよ')}catch(e){if(e&&e.name!=='AbortError')toast('共有できなかった…')}return}}
- dl(new Blob([txt],{type:ty}),nm);toast('共有したよ')};
+const b64u=u=>{let t='';for(let i=0;i<u.length;i+=8192)t+=String.fromCharCode(...u.subarray(i,i+8192));return btoa(t).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const ub64=s=>{const t=atob(s.replace(/-/g,'+').replace(/_/g,'/'));const u=new Uint8Array(t.length);for(let i=0;i<t.length;i++)u[i]=t.charCodeAt(i);return u};
+async function zpipe(u,C){const r=new Response(new Blob([u]).stream().pipeThrough(new C('deflate-raw')));return new Uint8Array(await r.arrayBuffer())}
+function packW(o){const ids=o.dancers.map(d=>d.id),q=v=>Math.round(v*8);return[1,o.song||'',o.w,o.d,o.dur,+o.div||4,o.view==='audience'?1:0,o.dancers.map(d=>[d.name,d.color]),o.scenes.map(sc=>[sc.name,ids.map(id=>sc.pos[id]?[q(sc.pos[id].x),q(sc.pos[id].y)]:0)])]}
+function unpackW(a){if(!Array.isArray(a)||a[0]!==1||!Array.isArray(a[7])||!Array.isArray(a[8]))throw 0;const ids=a[7].map((_,i)=>'d'+Date.now().toString(36)+i);
+ const o={song:String(a[1]||'').slice(0,80),w:a[2],d:a[3],dur:a[4],div:a[5],view:a[6]?'audience':'dancer',cur:0,dancers:a[7].slice(0,60).map((d,i)=>({id:ids[i],name:String(d&&d[0]||'').slice(0,20),color:/^#[0-9a-f]{6}$/i.test(d&&d[1])?d[1]:'#888888'})),
+ scenes:a[8].slice(0,200).map(sc=>{const pos={};(Array.isArray(sc&&sc[1])?sc[1]:[]).forEach((p,i)=>{if(ids[i]&&Array.isArray(p))pos[ids[i]]={x:p[0]/8,y:p[1]/8}});return{name:String(sc&&sc[0]||'').slice(0,40),pos}})};
+ if(!o.scenes.length)o.scenes.push({name:'フォーメーション1',pos:{}});return fix(o)}
+async function makeLink(o){const u=new TextEncoder().encode(JSON.stringify(packW(o)));let h;
+ if(typeof CompressionStream!=='undefined'){try{h='z'+b64u(await zpipe(u,CompressionStream))}catch(_){}}if(!h)h='j'+b64u(u);
+ return location.origin+location.pathname+'#s='+h}
+async function readLink(h){const k=h[0],u=ub64(h.slice(1));let b;if(k==='z')b=await zpipe(u,DecompressionStream);else if(k==='j')b=u;else throw 0;return unpackW(JSON.parse(new TextDecoder().decode(b)))}
+$('exp').onclick=async()=>{let url;try{url=await makeLink(S)}catch(_){toast('共有できなかった…');return}const nm=S.song||'バミリ';
+ if(navigator.share){try{await navigator.share({title:nm,text:`バミリ帳で『${nm}』のバミリを送ったよ`,url});toast('共有したよ')}catch(e){if(e&&e.name!=='AbortError')toast('共有できなかった…')}return}
+ try{await navigator.clipboard.writeText(url);toast('リンクをコピーしたよ')}catch(_){prompt('このリンクをコピーしてね',url)}};
+function askAdd(nm){return new Promise(r=>{const d=document.createElement('div');d.className='pop';d.style.alignItems='center';d.innerHTML=`<div style="background:var(--card);border-radius:16px;padding:20px;width:min(320px,88vw);text-align:center"><p style="margin:0 0 16px;font-size:16px;line-height:1.5;color:var(--ink)"></p><div style="display:flex;gap:10px"><button data-a="0" style="flex:1;text-align:center">やめる</button><button data-a="1" class="main" style="flex:1;text-align:center">追加</button></div></div>`;
+ d.querySelector('p').textContent=`『${nm}』のバミリを追加する？`;d.onclick=e=>{const b=e.target.closest('[data-a]');if(b||e.target===d){d.remove();r(!!(b&&b.dataset.a==='1'))}};document.body.appendChild(d)})}
+async function checkLink(){const m=location.hash.match(/^#s=([A-Za-z0-9_-]+)$/);if(!location.hash.startsWith('#s='))return;const clear=()=>history.replaceState(null,'',location.pathname+location.search);
+ let o;try{if(!m)throw 0;o=await readLink(m[1])}catch(_){clear();toast('リンクが読み込めなかった…');return}
+ const base=o.song||'バミリ';if(!await askAdd(base)){clear();return}
+ const names=new Set(DB.works.filter(w=>!w.deleted).map(w=>w.data.song));let nm=base,i=2;while(names.has(nm))nm=`${base}（${i++}）`;o.song=nm;
+ const w={id:'w'+Date.now(),updated:Date.now(),data:o};DB.works.push(w);saveDB();clear();openWork(w.id);toast('追加したよ')}
+addEventListener('hashchange',checkLink);
 $('imp').onclick=()=>$('file').click();
 $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{t=t.replace(/^\uFEFF/,'');let n=0,last=null;try{const o=JSON.parse(t);
  const list=o&&Array.isArray(o.works)?o.works.map(w=>w.data||w):[o];
@@ -235,10 +253,17 @@ $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{
  if(!n)throw 0;saveDB();if(n===1&&!$('editor').hidden)openWork(last.id);else{showHome();}}catch(_){alert('読み込めないファイルです')}});e.target.value=''};
 
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-$('png').onclick=()=>{const s0=sel;sel=null;render();const vb=svg.viewBox.baseVal,k=3;
+function makePng(){return new Promise((res,rej)=>{const s0=sel;sel=null;render();const vb=svg.viewBox.baseVal,k=3,TH=44;
  const x=new XMLSerializer().serializeToString(svg).replace('<svg',`<svg xmlns="http://www.w3.org/2000/svg" width="${vb.width}" height="${vb.height}" font-family="sans-serif"`);
- sel=s0;render();const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=vb.width*k;c.height=vb.height*k;const ctx=c.getContext('2d');ctx.scale(k,k);ctx.drawImage(img,0,0);
- c.toBlob(b=>dl(b,`${S.song||'bamiri'}_${sc().name}.png`))};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)};
+ sel=s0;render();const img=new Image();img.onerror=rej;img.onload=()=>{const c=document.createElement('canvas');c.width=vb.width*k;c.height=(vb.height+TH)*k;const ctx=c.getContext('2d');ctx.scale(k,k);
+ ctx.fillStyle='#232325';ctx.fillRect(0,0,vb.width,vb.height+TH);ctx.fillStyle='#ececee';ctx.font='bold 17px sans-serif';ctx.textBaseline='middle';ctx.fillText(sc().name||'',16,TH/2+4);
+ const w1=ctx.measureText(sc().name||'').width;ctx.fillStyle='#9a9aa0';ctx.font='13px sans-serif';ctx.fillText(S.song||'',Math.max(16+w1+12,0),TH/2+5);
+ ctx.drawImage(img,0,TH);c.toBlob(b=>b?res(b):rej(new Error('png')),'image/png')};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)})}
+$('savepng').onclick=async()=>{let blob;try{blob=await makePng()}catch(_){toast('保存できなかった…');return}
+ const nm=(`${S.song||'bamiri'}_${sc().name||''}`.replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,60)||'bamiri')+'.png';let f=null;try{f=new File([blob],nm,{type:'image/png'})}catch(_){}
+ if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
+  if(ok){try{await navigator.share({files:[f]});toast('保存したよ')}catch(e){if(e&&e.name!=='AbortError')toast('保存できなかった…')}return}}
+ dl(blob,nm);toast('保存したよ')};
 $('undo').onclick=()=>hist(US,RS);$('redo').onclick=()=>hist(RS,US);
 addEventListener('resize',()=>{if(CUR)render()});
 function ago(t){const m=(Date.now()-t)/6e4;if(m<1)return'たった今';if(m<60)return Math.floor(m)+'分前';const h=m/60;if(h<24)return Math.floor(h)+'時間前';const d=h/24;if(d<30)return Math.floor(d)+'日前';const mo=d/30;if(mo<12)return Math.floor(mo)+'か月前';return Math.floor(mo/12)+'年前'}
@@ -250,14 +275,14 @@ function renderHome(){const live=DB.works.filter(w=>!w.deleted),tr=DB.works.filt
  const list=(VIEW==='trash'?tr:live).filter(w=>(w.data.song||'').toLowerCase().includes(Q.toLowerCase())).sort((a,b)=>(VIEW==='trash'?b.deleted-a.deleted:b.updated-a.updated));
  const h=$('home');const qv=Q;
  h.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between">${VIEW==='trash'?`<h2><button class="ib" id="hback" aria-label="戻る" style="display:inline-flex;vertical-align:middle">←</button> 最近削除したもの</h2>`:`<h2>作品</h2>`}
- <div class="hicons"><button class="ib" id="himp" aria-label="データを開く" title="データを開く">${ICFD}<small>開く</small></button><button class="ib" id="hexp" aria-label="全部共有" title="すべての作品を共有">${ICSH}<small>全部共有</small></button></div></div>
+ <div class="hicons"><button class="ib" id="himp" aria-label="データを開く" title="データを開く">${ICFD}<small>開く</small></button><button class="ib" id="hexp" aria-label="バックアップ" title="すべての作品をバックアップ">${ICDL}<small>バックアップ</small></button></div></div>
  <div class="hbar"><input id="q" type="search" placeholder="検索…" value="${esc(qv)}"></div>
  ${VIEW==='list'?`<div class="tiles"><div class="tile" style="cursor:default">作品<b>${live.length}</b></div><div class="tile" id="trash">最近削除したもの<b>${tr.length}</b></div></div>`:`<p class="note">削除してから${TRASH_DAYS}日たつと完全に消えます。</p>`}
  <div class="works">${list.map(w=>{const d=w.data;return`<div class="wc" data-id="${w.id}"><div class="th">${thumb(d)}</div><div class="in"><div class="t">${esc(d.song||'無題')}</div><div class="m">${d.scenes.length}フォーメーション ・ ${d.dancers.length}人</div><div class="m">${VIEW==='trash'?'削除 '+ago(w.deleted):'✎ '+ago(w.updated)}</div></div><button class="menu" aria-label="メニュー">⋮</button></div>`}).join('')||`<div class="empty">${VIEW==='trash'?'ありません':'作品がありません。＋で作成'}</div>`}</div>
  ${VIEW==='list'?'<button class="fab" id="fab" aria-label="新しい作品">＋</button>':''}`;
  const q=$('q');q.oninput=e=>{Q=e.target.value;renderHome();const n=$('q');n.focus();n.setSelectionRange(Q.length,Q.length)};
  $('himp').onclick=()=>$('file').click();
- $('hexp').onclick=()=>dl(new Blob([JSON.stringify({app:'bamiri',works:live.map(w=>({updated:w.updated,data:w.data}))},null,1)],{type:'application/octet-stream'}),'バミリ_全作品.bamiri');
+ $('hexp').onclick=()=>{dl(new Blob([JSON.stringify({app:'bamiri',works:live.map(w=>({updated:w.updated,data:w.data}))},null,1)],{type:'application/octet-stream'}),'バミリ_バックアップ.bamiri');toast('バックアップしたよ')}
  if($('fab'))$('fab').onclick=newWork;if($('trash'))$('trash').onclick=()=>{VIEW='trash';renderHome()};if($('hback'))$('hback').onclick=()=>{VIEW='list';renderHome()};
  h.querySelectorAll('.wc').forEach(c=>c.onclick=e=>{const id=c.dataset.id;if(e.target.closest('.menu'))return menu(id);if(VIEW==='list')openWork(id);else menu(id)})}
 function newWork(){const n=prompt('曲名を入力してください','');if(n===null)return;const w={id:'w'+Date.now(),updated:Date.now(),data:blank(n.trim()||'新しい作品')};DB.works.push(w);saveDB();openWork(w.id)}
@@ -276,5 +301,5 @@ function openWork(id){const w=DB.works.find(x=>x.id===id);if(!w)return;setEdit(f
  const h=HIST[id]||{US:[],RS:[]};US=h.US;RS=h.RS;LAST=null;sel=null;Z=1;
  $('home').hidden=true;$('editor').hidden=false;setZoom(1);all();scrollTo(0,0)}
 $('back').onclick=()=>{if(CUR)HIST[CUR.id]={US,RS};showHome()};
-showHome();svg.style.maxHeight='calc(100vh - 200px)';
+showHome();svg.style.maxHeight='calc(100vh - 200px)';checkLink();
 </script></body></html>
