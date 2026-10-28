@@ -75,7 +75,7 @@ p.note{font-size:12px;color:var(--mut)}</style></head><body>
  <div class="card"><h3>メンバー</h3><div id="dancers"></div><div class="row"><button id="addD" class="main">＋メンバー追加</button></div></div>
  <div class="card" style="margin-top:10px"><h3>ステージ設定</h3>
   <div class="row sgrid"><div class="s ctr">横幅 <div class="cb"><button type="button" data-c="sw" data-k="-1">－</button><output id="sw"></output><button type="button" data-c="sw" data-k="1">＋</button></div></div><div class="s ctr">奥行 <div class="cb"><button type="button" data-c="sd" data-k="-1">－</button><output id="sd"></output><button type="button" data-c="sd" data-k="1">＋</button></div></div><label class="s ctr">マス目<select id="div" style="height:44px"><option value="1">分割なし</option><option value="2">2分割</option><option value="4">4分割</option><option value="8">8分割</option></select></label><div class="s ctr">移動秒 <div class="cb"><button type="button" data-c="dur" data-k="-1">－</button><output id="dur"></output><button type="button" data-c="dur" data-k="1">＋</button></div></div></div>
-  <div class="row"><input id="file" type="file" accept=".json,application/json" hidden></div>
+  <div class="row"><input id="file" type="file" accept=".json,application/json,text/plain,*/*" hidden></div>
   <p class="note">自動でこの端末に保存されます。0.25刻みでスナップ。2本指でズーム、空いている所をドラッグで移動。座標は中央=0、左右は踊る人目線。</p></div>
 </div></div></div>
 <script>
@@ -222,14 +222,19 @@ $('playBtn').onclick=async()=>{if(playing){playing=false;return}playing=true;$('
  playing=false;$('playBtn').textContent='▶ 再生';all()};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 // io
-$('exp').onclick=()=>dl(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),(S.song||'bamiri')+'.json');
+function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#3a3a3e;color:#ececee;padding:10px 18px;border-radius:999px;font-size:14px;z-index:50;box-shadow:0 4px 14px #0008;transition:opacity .3s;pointer-events:none';document.body.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,1800)}
+$('exp').onclick=async()=>{const nm=((S.song||'bamiri').replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,40)||'bamiri')+'.bamiri.json',ty='application/json;charset=utf-8',txt=JSON.stringify(S,null,1);
+ let f=null;try{f=new File([txt],nm,{type:'application/json'})}catch(_){}
+ if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
+  if(ok){try{await navigator.share({files:[f],title:S.song||'バミリ'});toast('保存したよ')}catch(e){if(e&&e.name!=='AbortError')toast('保存できへんかった…')}return}}
+ dl(new Blob([txt],{type:ty}),nm);toast('保存したよ')};
 $('imp').onclick=()=>$('file').click();
-$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{let n=0,last=null;try{const o=JSON.parse(t);
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{t=t.replace(/^\uFEFF/,'');let n=0,last=null;try{const o=JSON.parse(t);
  const list=o&&Array.isArray(o.works)?o.works.map(w=>w.data||w):[o];
  for(const d of list){if(!d||!Array.isArray(d.scenes)||!Array.isArray(d.dancers))continue;d.cur=0;fix(d);last={id:'w'+Date.now()+'_'+(n++),updated:Date.now(),data:d};DB.works.push(last)}
  if(!n)throw 0;saveDB();if(n===1&&!$('editor').hidden)openWork(last.id);else{showHome();}}catch(_){alert('読み込めないファイルです')}});e.target.value=''};
 
-function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 $('png').onclick=()=>{const s0=sel;sel=null;render();const vb=svg.viewBox.baseVal,k=3;
  const x=new XMLSerializer().serializeToString(svg).replace('<svg',`<svg xmlns="http://www.w3.org/2000/svg" width="${vb.width}" height="${vb.height}" font-family="sans-serif"`);
  sel=s0;render();const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=vb.width*k;c.height=vb.height*k;const ctx=c.getContext('2d');ctx.scale(k,k);ctx.drawImage(img,0,0);
