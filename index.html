@@ -62,7 +62,7 @@ body.anim button.big,body.anim button.nav{opacity:.5}
 #scenes{padding:2px 0 6px}
 [hidden]{display:none!important}
 p.note{font-size:12px;color:var(--mut)}</style></head><body>
-<div id="home"></div><div id="editor" hidden><header><button id="back" class="ib" aria-label="作品一覧へ" title="作品一覧へ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><input id="song" placeholder="曲名"><button id="savepng" class="ib" aria-label="画像を保存" title="画像を保存"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg><small>保存</small></button><button id="exp" class="ib" aria-label="共有" title="共有"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/><path d="M12 15V3M8 7l4-4 4 4"/></svg><small>共有</small></button><button id="imp" class="ib" aria-label="データを開く" title="データを開く"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><small>開く</small></button><button id="playBtn" class="main">▶ 再生</button></header>
+<div id="home"></div><div id="editor" hidden><header><button id="back" class="ib" aria-label="作品一覧へ" title="作品一覧へ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><input id="song" placeholder="曲名"><button id="savepng" class="ib" aria-label="PDFで保存" title="PDFで保存"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/><path d="M12 3v12M7 10l5 5 5-5"/></svg><small>保存</small></button><button id="exp" class="ib" aria-label="共有" title="共有"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/><path d="M12 15V3M8 7l4-4 4 4"/></svg><small>共有</small></button><button id="imp" class="ib" aria-label="データを開く" title="データを開く"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><small>開く</small></button><button id="playBtn" class="main">▶ 再生</button></header>
 <div id="wrap">
 <div id="left">
  <div class="card"><div id="scenes"></div>
@@ -256,22 +256,44 @@ $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{
  if(!n)throw 0;saveDB();if(n===1&&!$('editor').hidden)openWork(last.id);else{showHome();}}catch(_){alert('読み込めないファイルです')}});e.target.value=''};
 
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-function makePng(){return new Promise((res,rej)=>{const s0=sel;sel=null;render();const vb=svg.viewBox.baseVal,k=3,TH=44;
- const x=new XMLSerializer().serializeToString(svg).replace('<svg',`<svg xmlns="http://www.w3.org/2000/svg" width="${vb.width}" height="${vb.height}" font-family="sans-serif"`);
- sel=s0;render();const img=new Image();img.onerror=rej;img.onload=()=>{const c=document.createElement('canvas');c.width=vb.width*k;c.height=(vb.height+TH)*k;const ctx=c.getContext('2d');ctx.scale(k,k);
- ctx.fillStyle='#232325';ctx.fillRect(0,0,vb.width,vb.height+TH);ctx.fillStyle='#ececee';ctx.font='bold 17px sans-serif';ctx.textBaseline='middle';ctx.fillText(sc().name||'',16,TH/2+4);
- const w1=ctx.measureText(sc().name||'').width;ctx.fillStyle='#9a9aa0';ctx.font='13px sans-serif';ctx.fillText(S.song||'',Math.max(16+w1+12,0),TH/2+5);
- ctx.drawImage(img,0,TH);c.toBlob(b=>b?res(b):rej(new Error('png')),'image/png')};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)})}
-$('savepng').onclick=async()=>{let blob;try{blob=await makePng()}catch(_){toast('保存できなかった…');return}
- const nm=(`${S.song||'bamiri'}_${sc().name||''}`.replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,60)||'bamiri')+'.png';let f=null;try{f=new File([blob],nm,{type:'image/png'})}catch(_){}
- const url=URL.createObjectURL(blob);let ov=document.createElement('div');ov.id='pngov';ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(10,10,12,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px calc(16px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))';
- ov.innerHTML=`<img src="${url}" alt="" style="max-width:100%;max-height:60vh;border-radius:12px;box-shadow:0 6px 30px rgba(0,0,0,.5);-webkit-touch-callout:default"><div style="color:#9a9aa0;font-size:12px">画像を長押ししても保存できるよ</div><div style="display:flex;gap:10px"><button type="button" class="main" id="pngsave" style="min-width:130px;height:46px;font-size:16px">保存する</button><button type="button" id="pngclose" style="min-width:100px;height:46px;font-size:16px">閉じる</button></div>`;
- document.body.appendChild(ov);const close=()=>{ov.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)};
- ov.querySelector('#pngclose').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});
- ov.querySelector('#pngsave').onclick=async()=>{
-  if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
-   if(ok){try{await navigator.share({files:[f]});toast('保存したよ');close()}catch(e){if(e&&e.name!=='AbortError')toast('うまくいかない時は画像を長押ししてね')}return}}
-  dl(blob,nm);toast('保存したよ');close()}};
+function drawScene(o,si,k){const UU=60,MM=60,TH=64,W=(o.w+2*WING)*UU+2*MM,H=o.d*UU+2*MM+TH,c=document.createElement('canvas');c.width=Math.round(W*k);c.height=Math.round(H*k);const x=c.getContext('2d');x.scale(k,k);
+ const fl=o.view==='audience'?-1:1,aud=o.view==='audience',P=(px,py)=>[MM+(WING+o.w/2+fl*px)*UU,TH+MM+(o.d/2-fl*py)*UU],L=MM,T=TH+MM,R=W-MM,B=H-MM,sx=L+WING*UU,ex=R-WING*UU,dv=[1,2,4,8].includes(+o.div)?+o.div:4,F='"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif';
+ x.fillStyle='#2a2a2d';x.fillRect(0,0,W,H);x.fillStyle='#232325';x.fillRect(0,0,W,TH);
+ const s=o.scenes[si];x.textBaseline='middle';x.fillStyle='#ececee';x.font=`bold 24px ${F}`;const t1=`${si+1}. ${s.name||''}`;x.fillText(t1,24,TH/2);const w1=x.measureText(t1).width;x.fillStyle='#9a9aa0';x.font=`18px ${F}`;x.fillText(o.song||'',24+w1+16,TH/2);
+ x.fillStyle='#9a9aa0';x.font=`16px ${F}`;x.textAlign='right';x.fillText(`${si+1} / ${o.scenes.length}`,W-24,TH/2);x.textAlign='left';
+ const rr=()=>{x.beginPath();x.roundRect?x.roundRect(L,T,R-L,B-T,16):x.rect(L,T,R-L,B-T)};
+ x.save();rr();x.clip();x.fillStyle='#232326';x.fillRect(L,T,R-L,B-T);x.fillStyle='#38383c';x.fillRect(L,T,sx-L,B-T);x.fillRect(ex,T,R-ex,B-T);
+ const ln=(v,a,b,c2,d)=>{const i=Number.isInteger(v);x.strokeStyle=i?'#4a4a4f':(v*2%1===0?'#323236':'#2c2c30');x.lineWidth=i?1.2:0.7;x.beginPath();x.moveTo(a,b);x.lineTo(c2,d);x.stroke()};
+ for(let i=-(o.w/2+WING)*dv;i<=(o.w/2+WING)*dv;i++){const v=i/dv,[px]=P(v,0);if(px>L&&px<R)ln(v,px,T,px,B)}
+ for(let i=-o.d*dv;i<=o.d*dv;i++){const v=i/dv,[,py]=P(0,v);if(py>T&&py<B)ln(v,L,py,R,py)}
+ x.restore();x.strokeStyle='#9a9aa0';x.lineWidth=2;rr();x.stroke();
+ const [cx,cy]=P(0,0),tk=14;x.strokeStyle='#9a9aa0';x.beginPath();[[cx,T-tk,cx,T+tk],[cx,B-tk,cx,B+tk],[L-tk,cy,L+tk,cy],[R-tk,cy,R+tk,cy],[cx-7,cy-7,cx+7,cy+7],[cx+7,cy-7,cx-7,cy+7]].forEach(a=>{x.moveTo(a[0],a[1]);x.lineTo(a[2],a[3])});x.stroke();
+ x.textAlign='center';x.fillStyle='#ececee';x.font=`600 20px ${F}`;x.fillText('観客',cx,aud?B+30:T-28);x.fillStyle='#9a9aa0';x.font=`18px ${F}`;x.fillText('舞台裏',cx,aud?T-28:B+30);
+ x.textAlign='right';x.fillStyle='#77777d';x.font=`13px ${F}`;x.fillText(aud?'客席から見た図':'踊る人目線',R,aud?B+30:T-28);x.textAlign='center';
+ for(const d of o.dancers){const p=s.pos[d.id];if(!p)continue;const[px,py]=P(p.x,p.y);x.fillStyle=d.color;x.beginPath();x.arc(px,py,17,0,7);x.fill();
+  x.fillStyle='#fff';x.font=`bold 12px ${F}`;x.fillText(d.name.slice(0,2),px,py+1);x.fillStyle='#c8c8cc';x.font=`13px ${F}`;x.fillText(d.name,px,py+31)}
+ return c}
+const jpgOf=c=>new Promise((res,rej)=>c.toBlob(b=>b?b.arrayBuffer().then(a=>res(new Uint8Array(a))):rej(new Error('jpg')),'image/jpeg',0.92));
+async function makePdf(o){const enc=new TextEncoder(),parts=[],off=[];let len=0;const put=v=>{const u=typeof v==='string'?enc.encode(v):v;parts.push(u);len+=u.length};
+ const n=o.scenes.length,pages=[];for(let i=0;i<n;i++){const c=drawScene(o,i,2);pages.push({w:c.width,h:c.height,j:await jpgOf(c)})}
+ put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n'.replace(/[\x80-\xff]/g,'A'));const obj=(id,f)=>{off[id]=len;put(id+' 0 obj\n');f();put('\nendobj\n')};
+ const kids=pages.map((_,i)=>(3+i*3)+' 0 R').join(' ');obj(1,()=>put('<< /Type /Catalog /Pages 2 0 R >>'));obj(2,()=>put(`<< /Type /Pages /Kids [${kids}] /Count ${n} >>`));
+ pages.forEach((p,i)=>{const id=3+i*3,PW=842,PH=+(842*p.h/p.w).toFixed(2),cs=`q ${PW} 0 0 ${PH} 0 0 cm /Im0 Do Q`;
+  obj(id,()=>put(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 ${id+1} 0 R >> >> /Contents ${id+2} 0 R >>`));
+  obj(id+1,()=>{put(`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.j.length} >>\nstream\n`);put(p.j);put('\nendstream')});
+  obj(id+2,()=>put(`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`))});
+ const N=3+n*3,xr=len;let t=`xref\n0 ${N}\n0000000000 65535 f \n`;for(let i=1;i<N;i++)t+=String(off[i]).padStart(10,'0')+' 00000 n \n';put(t+`trailer\n<< /Size ${N} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF\n`);
+ return new Blob(parts,{type:'application/pdf'})}
+function makePng(){return new Promise((res,rej)=>drawScene(S,S.cur,3).toBlob(b=>b?res(b):rej(new Error('png')),'image/png'))}
+$('savepng').onclick=async()=>{if($('pdfov'))return;let blob;toast('PDFを作ってるよ…');try{blob=await makePdf(S)}catch(_){toast('保存できなかった…');return}
+ const nm=((S.song||'bamiri').replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,60)||'bamiri')+'.pdf';let f=null;try{f=new File([blob],nm,{type:'application/pdf'})}catch(_){}
+ const ov=document.createElement('div');ov.id='pdfov';ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(10,10,12,.86);display:flex;align-items:center;justify-content:center;padding:20px';
+ ov.innerHTML=`<div style="background:var(--card);border-radius:16px;padding:22px 20px;width:min(320px,88vw);text-align:center"><div style="font-size:18px;font-weight:600;color:var(--ink)">PDFができたよ</div><div id="pdfinfo" style="color:#9a9aa0;font-size:13px;margin:8px 0 18px"></div><div style="display:flex;gap:10px"><button type="button" id="pdfclose" style="flex:1;height:46px;text-align:center">閉じる</button><button type="button" class="main" id="pdfsave" style="flex:1.4;height:46px;text-align:center">ファイルに保存</button></div></div>`;
+ ov.querySelector('#pdfinfo').textContent=`${S.scenes.length}ページ（フォーメーションごとに1ページ）`;document.body.appendChild(ov);const close=()=>ov.remove();
+ ov.querySelector('#pdfclose').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});
+ ov.querySelector('#pdfsave').onclick=()=>{let ok=false;if(f&&navigator.canShare&&navigator.share){try{ok=navigator.canShare({files:[f]})}catch(_){}}
+  if(ok){navigator.share({files:[f],title:nm}).then(()=>{toast('保存したよ');close()},e=>{if(e&&e.name!=='AbortError')toast('保存できなかった…')});return}
+  try{dl(blob,nm);toast('保存したよ');close()}catch(_){toast('保存できなかった…')}}};
 $('undo').onclick=()=>hist(US,RS);$('redo').onclick=()=>hist(RS,US);
 addEventListener('resize',()=>{if(CUR)render()});
 function ago(t){const m=(Date.now()-t)/6e4;if(m<1)return'たった今';if(m<60)return Math.floor(m)+'分前';const h=m/60;if(h<24)return Math.floor(h)+'時間前';const d=h/24;if(d<30)return Math.floor(d)+'日前';const mo=d/30;if(mo<12)return Math.floor(mo)+'か月前';return Math.floor(mo/12)+'年前'}
