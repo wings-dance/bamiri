@@ -235,7 +235,10 @@ async function makeLink(o){const u=new TextEncoder().encode(JSON.stringify(packW
  if(typeof CompressionStream!=='undefined'){try{h='z'+b64u(await zpipe(u,CompressionStream))}catch(_){}}if(!h)h='j'+b64u(u);
  return location.origin+location.pathname+'#s='+h}
 async function readLink(h){const k=h[0],u=ub64(h.slice(1));let b;if(k==='z')b=await zpipe(u,DecompressionStream);else if(k==='j')b=u;else throw 0;return unpackW(JSON.parse(new TextDecoder().decode(b)))}
-$('exp').onclick=async()=>{let url;try{url=await makeLink(S)}catch(_){toast('共有できなかった…');return}const nm=S.song||'バミリ';
+let LINKC={k:'',u:''};function linkKey(){return JSON.stringify(packW(S))}
+function warmLink(){try{const k=linkKey();if(k===LINKC.k)return;makeLink(S).then(u=>{LINKC={k,u}}).catch(()=>{})}catch(_){}}
+setInterval(()=>{if(CUR&&!document.hidden)warmLink()},1500);
+$('exp').onclick=async()=>{let url;try{const k=linkKey();url=k===LINKC.k?LINKC.u:location.origin+location.pathname+'#s=j'+b64u(new TextEncoder().encode(k))}catch(_){toast('共有できなかった…');return}const nm=S.song||'バミリ';
  if(navigator.share){try{await navigator.share({title:nm,text:`バミリ帳で『${nm}』のバミリを送ったよ`,url});toast('共有したよ')}catch(e){if(e&&e.name!=='AbortError')toast('共有できなかった…')}return}
  try{await navigator.clipboard.writeText(url);toast('リンクをコピーしたよ')}catch(_){prompt('このリンクをコピーしてね',url)}};
 function askAdd(nm){return new Promise(r=>{const d=document.createElement('div');d.className='pop';d.style.alignItems='center';d.innerHTML=`<div style="background:var(--card);border-radius:16px;padding:20px;width:min(320px,88vw);text-align:center"><p style="margin:0 0 16px;font-size:16px;line-height:1.5;color:var(--ink)"></p><div style="display:flex;gap:10px"><button data-a="0" style="flex:1;text-align:center">やめる</button><button data-a="1" class="main" style="flex:1;text-align:center">追加</button></div></div>`;
@@ -261,9 +264,14 @@ function makePng(){return new Promise((res,rej)=>{const s0=sel;sel=null;render()
  ctx.drawImage(img,0,TH);c.toBlob(b=>b?res(b):rej(new Error('png')),'image/png')};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)})}
 $('savepng').onclick=async()=>{let blob;try{blob=await makePng()}catch(_){toast('保存できなかった…');return}
  const nm=(`${S.song||'bamiri'}_${sc().name||''}`.replace(/[\\/:*?"<>|\x00-\x1f]/g,'').trim().slice(0,60)||'bamiri')+'.png';let f=null;try{f=new File([blob],nm,{type:'image/png'})}catch(_){}
- if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
-  if(ok){try{await navigator.share({files:[f]});toast('保存したよ')}catch(e){if(e&&e.name!=='AbortError')toast('保存できなかった…')}return}}
- dl(blob,nm);toast('保存したよ')};
+ const url=URL.createObjectURL(blob);let ov=document.createElement('div');ov.id='pngov';ov.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(10,10,12,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px calc(16px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))';
+ ov.innerHTML=`<img src="${url}" alt="" style="max-width:100%;max-height:60vh;border-radius:12px;box-shadow:0 6px 30px rgba(0,0,0,.5);-webkit-touch-callout:default"><div style="color:#9a9aa0;font-size:12px">画像を長押ししても保存できるよ</div><div style="display:flex;gap:10px"><button type="button" class="main" id="pngsave" style="min-width:130px;height:46px;font-size:16px">保存する</button><button type="button" id="pngclose" style="min-width:100px;height:46px;font-size:16px">閉じる</button></div>`;
+ document.body.appendChild(ov);const close=()=>{ov.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+ ov.querySelector('#pngclose').onclick=close;ov.addEventListener('click',e=>{if(e.target===ov)close()});
+ ov.querySelector('#pngsave').onclick=async()=>{
+  if(f&&navigator.canShare&&navigator.share){let ok=false;try{ok=navigator.canShare({files:[f]})}catch(_){}
+   if(ok){try{await navigator.share({files:[f]});toast('保存したよ');close()}catch(e){if(e&&e.name!=='AbortError')toast('うまくいかない時は画像を長押ししてね')}return}}
+  dl(blob,nm);toast('保存したよ');close()}};
 $('undo').onclick=()=>hist(US,RS);$('redo').onclick=()=>hist(RS,US);
 addEventListener('resize',()=>{if(CUR)render()});
 function ago(t){const m=(Date.now()-t)/6e4;if(m<1)return'たった今';if(m<60)return Math.floor(m)+'分前';const h=m/60;if(h<24)return Math.floor(h)+'時間前';const d=h/24;if(d<30)return Math.floor(d)+'日前';const mo=d/30;if(mo<12)return Math.floor(mo)+'か月前';return Math.floor(mo/12)+'年前'}
